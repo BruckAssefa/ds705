@@ -1,0 +1,31 @@
+---
+title: 'A mini biography for '
+author: "TYPE YOUR NAME HERE"
+output: word_document
+---
+
+Share a little information about yourself, but only what you are comfortable with.  You can use the following as a template.  Change the information so it is about you!  To include this in a discussion, knit this document into aWord document, then copy and paste the content into the discussion post editor in D2L.
+
+## Let me introduce myself to you. 
+
+(CHANGE THE FOLLOWING LIST TO INTRODUCE YOURSELF)
+- I am a professor in the Mathematics Department at UWL and have been here since 1999. 
+- I earned a BS in Secondary Mathematics Education in 1992 and a MS in Applied Statistics in 1994 from Wright State University (near Dayton, OH). 
+- I also worked as an instructor at Wright State University for five years, mostly teaching elementary statistics, and simultaneously earned a PhD in Statistics in 1999 from the Air Force Institute of Technology (located within Wright-Patterson Air Force Base). 
+- My primary research area is lifetime data analysis and goodness-of-fit testing with randomly censored data.
+- I have enjoyed the La Crosse area very much since moving here and can often be found in the great outdoors hiking, biking, canoeing, camping, or playing a good old-fashioned game of kickball with my six kids.
+- **Fun Fact:**  When I was younger I played lead guitar in a local rock band in the Dayton area for 9 years.  I still enjoy writing, recording, and playing music.
+
+### Why I want to learn about data science: 
+
+(CHANGE TO YOUR OWN ANSWER) I want to learn about and also to teach data science because I can see the need for this emerging conglomeration of existing disciplines with some additional unique features of its own. There's a lot of data out there, but not all of it is useful, so it takes something like "data science" to find the *information* buried in the data.
+
+#### What is your background in statistics?
+
+(CHANGE TO YOUR OWN ANSWER) I've taught statistics classes at the university level since 1993.  During that time I have also written research papers within the field of statistics as well as the supporting statistician is a variety of other disciplines, including sport science, education, and biology.
+
+ 
+
+
+
+
