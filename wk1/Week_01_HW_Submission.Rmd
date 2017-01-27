@@ -1,7 +1,7 @@
 ---
 title: "Week 1 HW Submission"
-author: "Professor Stats - *change this*"
-date: "September 2, 2015"
+author: "Paul Isaacson"
+date: "January 23, 2017"
 output: word_document
 ---
 
@@ -19,12 +19,6 @@ require(DS705data)
 data(HealthExam)
 ```
 
-## How to complete the homework.
-
-If you've made it this far, then you've already downloaded and unzipped the HW packet for this week.  We suggest that you keep all of the materials, including this .rmd file,  for the week in one folder.  It will help to set the working directory to the folder that contains the HW materials.  You can do this by opening the rmd file in an RStudio editor window and then using the menu commands Session -> Set Working Directory -> To Source File Location.
-
-You'll be adding R code and typing answers in the designated spaces throughout this document.  At the end of the week you'll submit the .rmd file and the "knitted" Word document to the dropbox on D2L.  
-
 ## Exercise 1
 
 For this exercise, you'll explore and summarize data on cholesterol levels for 40 randomly selected American women.  
@@ -36,7 +30,7 @@ From the HealthExam data set, extract the cholesterol level of the 40 women and 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# This is a comment, change it and add your code below.
+fs <- HealthExam$Cholesterol[HealthExam$Sex == 'F']
 
 ```
 
@@ -49,11 +43,12 @@ Apply summary() and sd() to the vector fs to find summary statistics for female 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+summary(fs)
+sd(fs)
 
 ```
 
-Replace text with your written answer.
+Right Skewed. The max is large at 920.0. Also, the mean is higher than the median, another indicator of skew. 
 
 ---
 
@@ -64,11 +59,11 @@ Make a histogram for female cholesterol level.  Label the $x$-axis with "mg/dl" 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+hist(fs, xlab='mg/dl', main='Female cholesterol level', prob=TRUE)
 
 ```
 
-Replace text with your written answer.
+The shape also indicates right-skew. The data does not appear to fit a normal distribution. The mound shape is missing the left side. 
 
 ---
 
@@ -79,7 +74,7 @@ Make a boxplot for the same data as in Exercise 4.  Label the $y$-axis with "mg/
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1d -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+boxplot(fs, ylab='mg/dl', main='Female cholesterol level')
 
 ```
 
@@ -92,8 +87,7 @@ According to the 1.5 IQR rule, what is the largest value of female cholesterol l
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# quantile(fs,.75) gives the third quartile
-# IQR(fs) gives the interquartile range
+quantile(fs, .75) + 1.5 * IQR(fs)
 
 ```
 
@@ -106,11 +100,11 @@ The maximum female cholesterol level is an outlier, find its $z$-score.  You'll 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1f -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+(max(fs) - mean(fs)) / sd(fs)
 
 ```
 
-Replace this text with your written answer.
+This is unusually large. The value of 3.651556 has a probability of `r 2*pnorm(-3.651556) ` which in a population of 40 we would only expect to see `r 40 * 0.0002606562` that are at least that many standard deviations away from the mean.
 
 ---
 
@@ -121,11 +115,12 @@ Make a normal probability plot for fs, add a fit line to it, and label $y$-axis 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+qqnorm(fs, ylab='mg/dl')
+qqline(fs)
 
 ```
 
-Replace this text with your written answer.
+No. On the lower end, the points are above the line indicating the data is the the right of where it would be in a normal distribution. Towards the upper end, the points are significantly higher than would be expected indicating a longer than expected right side.
 
 ---
 
@@ -138,42 +133,31 @@ The code below loads a data set with randomly sampled test scores from three dif
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2a -|-|-|-|-|-|-|-|-|-|-|-
 
 ``` {r}
-# start by copying and pasting this block of code so you can refer to it as you tweak your own code
-# when you no longer want to execute this block you can delete it, or change the {r}
-# to {r, include=FALSE, eval=FALSE}.  You can also minimize the whole block by clicking the little down arrow next to the line number at the beginning of the block.
+homes <- read.csv("homes.csv")
+head(homes)
 
-# load the data and look at it
-testScores <- read.csv("testScores.csv")
-head(testScores)
+#summary(homes$PercentOwned[homes$Year=="year1985"])
+#summary(homes$PercentOwned[homes$Year=="year1996"])
+#summary(homes$PercentOwned[homes$Year=="year2002"])
 
-# summarize the scores for each instructor
-summary(testScores$score[testScores$instructor=="A"])
-summary(testScores$score[testScores$instructor=="B"])
-summary(testScores$score[testScores$instructor=="C"])
+tapply(homes$PercentOwned, homes$Year, summary)
 
-# a more advanced version of this summary by instructor would be to use tapply() to loop over the factors.
-# uncomment the next line to try it
-tapply(testScores$score, testScores$instructor, summary)
-
-#  looks like the test scores across all three instructors range from 52 to 87, to make it easier to compare the distributions lets use the same bins for all three histograms
-bins <- seq(50,90,by=5)
+bins <- seq(35, 80, by=5)
 
 ```
 
 ```{r, fig.width=8, fig.height=3}
-# set up R to expect an array of plots with 1 row and 3 columns
-# the mar parameter adjust white space around the plot, notice that it has covered the axis labels which is OK here
 par(mfrow=c(1,3),mar=c(3,3,2,1))
-hist(testScores$score[testScores$instructor=="A"],main="Scores for Instructor A",breaks = bins,xlab="score", prob=TRUE)
-hist(testScores$score[testScores$instructor=="B"],main="Scores for Instructor B",breaks = bins,xlab="score", prob=TRUE,ylab="")
-hist(testScores$score[testScores$instructor=="C"],main="Scores for Instructor C",breaks = bins,xlab="score", prob=TRUE)
-# reset to one plot
+
+hist(homes$PercentOwned[homes$Year=="year1985"],main="Percent owned in 1985",breaks = bins,xlab="PercentOwned", prob=TRUE)
+hist(homes$PercentOwned[homes$Year=="year1996"],main="Percent owned in 1996",breaks = bins,xlab="PercentOwned", prob=TRUE,ylab="")
+hist(homes$PercentOwned[homes$Year=="year2002"],main="Percent owned in 2002",breaks = bins,xlab="PercentOwned", prob=TRUE)
+
 par(mfrow=c(1,1))
 ```
 
 ```{r, fig.width=7, fig.height=7}
-# make side-by-side boxplots to make comparisons easier
-boxplot(testScores$score~testScores$instructor,names=c("Instructor A","Instructor B","Instructor C"),ylab="score",main="Test Scores")
+boxplot(homes$PercentOwned~homes$Year,names=c("1985","1996","2002"),ylab="PercentOwned",main="Homes")
 
 ```
 
@@ -184,7 +168,7 @@ Comment on similarities and differences among the distributions of home ownershi
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer.
+All three distributions are skewed to the left. The overall trend is that homeownership is going up.
 
 ---
 
@@ -199,7 +183,7 @@ Find the probability that a random natural pregnancy lasts less than 250 days.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+pnorm(250, 286, 16)
 
 ```
 
@@ -212,7 +196,7 @@ Compute the probability that a natural human pregnancy lasts between 260 and 280
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+pnorm(280, 286, 16) - pnorm(260, 268, 16)
 
 ```
 
@@ -225,7 +209,7 @@ How long are the longest 10% of natural human pregnancies?
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+qnorm(.10, 286, 16)
 
 ```
 
@@ -243,7 +227,8 @@ Use read.csv(...) to read the file into a dataframe.  This is an artificial data
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+df <- read.csv('bodyFat.csv')
+bfat <- df$bodyFat
 
 ```
 
@@ -256,11 +241,11 @@ Make a histogram of the bodyfat percentages.  Does it appear that the data comes
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+hist(bfat, prob=TRUE)
 
 ```
 
-Replace this text with your written answer.
+Yes, the data appears to come from a normal distribution. 
 
 ---
 
@@ -271,11 +256,12 @@ Now make a normal probability plot with a fitted line by using qqnorm() and qqli
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# insert your code here.
+qqnorm(bfat, ylab = 'Body Fat Percentage')
+qqline(bfat)
 
 ```
 
-Replace this text with your written answer.
+The s shape tells us that the left side is shifted to the right and the right side is shifted to the left. In short, the distribution is normal shape but more "squished"
 
 ---
 
