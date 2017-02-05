@@ -190,7 +190,7 @@ Create boxplots and histograms for each group (previous typing class vs. self-ta
 ```{r}
 boxplot(Words ~ Method, data=Typing, xlab='Method', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed')
 
-par(mfrow=c(1,2))
+par(mfrow=c(2,1))
 with(Typing, hist(Words[Method=='prior course'], xlab='Prior course', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
 with(Typing, hist(Words[Method=='self-taught'], xlab='Self-taught', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
 
@@ -214,7 +214,7 @@ Describe the shapes of the histograms for the sample data for each sample.
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2d -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+The histogram of the students who had a prior course appears to be more normally distributed. There is greater variation in the words per minute typed. However, the self taught students appear to be centered more closely to one mean. This mean does appear to be lower than the students with a prior course.
 
 ---
 
@@ -225,9 +225,13 @@ Conduct an appropriate test to determine if typing speed in each population can 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+
+with(Typing, shapiro.test(Words[Method=='prior course']))
+with(Typing, shapiro.test(Words[Method=='self-taught']))
 
 ```
+
+It appears as though the students with a prior course is from a normal distribution(p-value 0.6362). It is less clear whether the students who were self-taught is from a normal distribution (p-value 0.1025) However, I am willing to accept that it was using a signifance of 0.5.
 
 ---
 
@@ -238,9 +242,11 @@ Conduct an appropriate test to determine if typing speed in each population can 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2f -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+with(Typing, leveneTest(Words~Method))
 
 ```
+
+The variances are not equal (p-value 0.004222)
 
 ---
 
@@ -254,7 +260,8 @@ Define the parameters in words in the context of the problem.
 
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step1 -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+Let u1 represent the population mean words per minute typed for students with a prior course.
+Let u2 represent the population mean words per minute typed for students who are self-taught.
 
 #### Step 2
 
@@ -262,7 +269,8 @@ State the null and alternative hypotheses for the test.
  
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step2 -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+$$H_0: \mu_\mbox{prior course} = \mu_\mbox{self-taught}$$
+$$H_a: \mu_\mbox{prior course} \neq \mu_\mbox{self-taught}$$
 
 #### Step 3
 
@@ -271,7 +279,7 @@ Use R to generate the output for the test you selected.
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step3 -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+t.test(Words~Method, data=Typing)
 ```
 
 #### Step 4 
@@ -279,7 +287,8 @@ State both a statistical conclusion at $\alpha=0.10$ and interpret it in the con
 
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step4 -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+
+At a .05 signifance, we are able to reject the null hypothesis. That is to say, the population mean of all students words per minute typed for prior course students is different than the population mean of all students words per minute typed for self-taught students.
 
 ---
 
@@ -289,7 +298,7 @@ Write an interpretation in the context of the problem for a 90% confidence inter
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2h -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+We are 90% confident that the mean of the population of students who took a prior course is between 0.8333886 and 6.5512267 words per minute higher than the population of students who took are self-taught.
 
 ---
 
@@ -299,6 +308,7 @@ Did you use the separate-variance t-procedures or the pooled t-procedures?  Just
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2i -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+I used the separate-variance t-procedure. This was due to the fact that the levene test showed the variances of the samples are not equal (p-value 0.004222). Homogeneity of variance is a requirement in order to use the pooled t-procedure.
+
 
 ---
