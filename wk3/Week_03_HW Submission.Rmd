@@ -1,0 +1,304 @@
+---
+title: 'Lab Assignment: Two-Sample t-Procedures'
+author: "Paul Isaacson"
+date: "Jan. 2, 2017"
+output: word_document
+fontsize: 12pt
+---
+
+```{r include=FALSE, cache=FALSE}
+# Don't modify this chunk of code, it is just installing and loading the DS705data package
+if (!require(DS705data)){
+  if (!require(devtools)){
+    install.packages('devtools',repos="http://cran.rstudio.com")
+  }
+  library(devtools)
+  install_github('DataScienceUWL/DS705data')
+}
+require(DS705data)
+```
+   
+## Exercise 1  
+
+An experiment was conducted to evaluate the effectiveness of a drug treatment for tapeworm in the stomachs of sheep. A random sample of 24 worm-infected lambs of approximately the same age was divided into two groups. Twelve of the lambs were injected with the drug and the remaining twelve were left untreated. After a 6-month period the lambs were slaughtered and the worm counts recorded.
+
+### Part 1a
+
+Load the dataset WormSheep from the DS705data package. Note that the package is loaded above at line 18.  You just need the data() command.  To see all the datasets in the package, type data(package='DS705data').
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1a -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+data(WormSheep)
+
+```
+
+---
+
+### Part 1b	
+
+Create boxplots and histograms for each group (treated vs. untreated).  Be sure that each plot is labeled appropriately.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1b -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+boxplot(worms ~ treated, data=WormSheep, xlab='Sheep', ylab='Interger worm count', main='Effectivness of treatment for tapeworm in stomachs of sheep')
+
+par(mfrow=c(1,2))
+with(WormSheep, hist(worms[treated=='treated'], xlab='Treated sheep', ylab='Interger worm count', main='Effectivness of treatment for tapeworm in stomachs of sheep', xlim=c(0,70)))
+with(WormSheep, hist(worms[treated=='untreated'], xlab='Untreated sheep', ylab='Interger worm count', main='Effectivness of treatment for tapeworm in stomachs of sheep', xlim=c(0,70)))
+
+```
+
+---
+
+### Part 1c  
+
+Do the boxplots show any outliers? 
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1c -|-|-|-|-|-|-|-|-|-|-|-
+
+No.
+
+---
+
+### Part 1d  
+
+Describe the shapes of the histograms for the sample data for each sample.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1d -|-|-|-|-|-|-|-|-|-|-|-
+
+The shape of each has a peak in the middle.
+
+---
+
+### Part 1e 
+
+Conduct an appropriate test to determine if the worm counts in each population can be considered as normally distributed.  Provide the p-value and the conclusion of the test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+with(WormSheep, shapiro.test(worms[treated=='treated']))
+with(WormSheep, shapiro.test(worms[treated=='untreated']))
+
+```
+At a .05 significance, it is plausible that both the treated (p-value 0.6504) and the untreated (p-value 0.5491) came from a normal distribution.
+
+---
+
+### Part 1f  	
+
+Conduct an appropriate test to determine if the worm counts in each population can be considered to have equal variances.  Provide the p-value and the conclusion of the test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1f -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+leveneTest(worms~treated, data=WormSheep)
+
+```
+At .05 significance, we fail to reject the null hypothesis (p-value 0.7104). In other words, it is entirely plausible that the variables are equal.
+---
+
+### Part 1g	
+    
+Conduct the test of your choice to compare the population mean worm count for all sheep treated with the drug to the mean worm count for the population of untreated sheep.  Let $\alpha = 0.05$.
+
+
+#### Step 1
+
+Define the parameters in words in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g.step1 -|-|-|-|-|-|-|-|-|-|-|-
+
+Let u1 represent the population mean worms per sheep that are is sheep with a treatment.
+Let u2 represent the population mean worms per sheep that are is sheep without a treatment.
+
+#### Step 2
+
+State the null and alternative hypotheses for the test.
+ 
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g.step2 -|-|-|-|-|-|-|-|-|-|-|-
+
+$$H_0: \mu_\mbox{treated} = \mu_\mbox{untreated}$$
+$$H_a: \mu_\mbox{treated} \neq \mu_\mbox{untreated}$$
+
+
+#### Step 3
+
+Use R to generate the output for the test you selected.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g.step3 -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+t.test(worms~treated, data=WormSheep, var.equal=TRUE)
+
+```
+
+#### Step 4
+
+State both a statistical conclusion at $\alpha=0.05$ and interpret it in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g.step4 -|-|-|-|-|-|-|-|-|-|-|-
+
+At a .05 significance, we are able to reject the null hypothesis. That is to say, there is sufficent evidence to claim that the population mean of worms in sheep for the treated group is different than the population mean of worms in sheep for the untreated group.
+
+---
+
+### Part 1h  
+
+Write an interpretation in the context of the problem for the 95% CI.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1h -|-|-|-|-|-|-|-|-|-|-|-
+
+We are 95% certain that the population mean of worms in sheep for the treated group is between 25.032642 and 1.134025 less than the population mean of worms in sheep for the untreated group.
+
+---
+
+### Part 1i  
+
+Did you use the separate-variance t-procedures or the pooled t-procedures?  Justify your choice, including some discussion of how well the conditions for the hypothesis test and confidence interval procedures were met.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1i -|-|-|-|-|-|-|-|-|-|-|-
+
+I used the pooled t-procedure. This is due to the fact that the results of the levene test showed that the variances of each group was equal. 
+
+---
+
+## Exercise 2
+
+Data was collected for a sample of college students at a university in the Midwest.  One variable measured was the number of words per minute that they could type and also whether or not they had previously taken a typing course (Method 1) or if they were self-taught (Method 2).  
+
+### Part 2a  
+
+Load the dataset Typing from the DS705data package.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2a -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+data(Typing)
+```
+
+---
+
+### Part 2b
+
+Create boxplots and histograms for each group (previous typing class vs. self-taught).  Be sure that each plot is labeled appropriately.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+boxplot(Words ~ Method, data=Typing, xlab='Method', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed')
+
+par(mfrow=c(1,2))
+with(Typing, hist(Words[Method=='prior course'], xlab='Prior course', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
+with(Typing, hist(Words[Method=='self-taught'], xlab='Self-taught', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
+
+```
+
+---
+
+### Part 2c
+
+Do the boxplots show any outliers? 
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2c -|-|-|-|-|-|-|-|-|-|-|-
+
+Yes, both have outliers.
+
+---
+
+### Part 2d	
+
+Describe the shapes of the histograms for the sample data for each sample.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2d -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+---
+
+### Part 2e
+
+Conduct an appropriate test to determine if typing speed in each population can be considered as normally distributed.  Provide the p-value and the conclusion of the test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+# Insert your R code here.
+
+```
+
+---
+
+### Part 2f
+
+Conduct an appropriate test to determine if typing speed in each population can be considered to have equal variances.  Provide the p-value and the conclusion of the test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2f -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+# Insert your R code here.
+
+```
+
+---
+
+### Part 2g
+
+Conduct the test of your choice to test that the population mean typing speed for all college students with a previous course in typing is higher than for those who were self-taught.  Let $\alpha = 0.10$.
+
+#### Step 1
+
+Define the parameters in words in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step1 -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+#### Step 2
+
+State the null and alternative hypotheses for the test.
+ 
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step2 -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+#### Step 3
+
+Use R to generate the output for the test you selected.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step3 -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+# Insert your R code here.
+```
+
+#### Step 4 
+State both a statistical conclusion at $\alpha=0.10$ and interpret it in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step4 -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+---
+
+### Part 2h
+
+Write an interpretation in the context of the problem for a 90% confidence interval.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2h -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+---
+
+### Part 2i
+
+Did you use the separate-variance t-procedures or the pooled t-procedures?  Justify your choice, including some discussion of how well the conditions for the hypothesis test and confidence interval procedures were met.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2i -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+---
