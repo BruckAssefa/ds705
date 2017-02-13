@@ -1,0 +1,253 @@
+---
+title: 'Lab Assignment: Inference for Paired Data'
+author: "Paul Isaacson"
+date: "Feb. 10, 2017"
+output: word_document
+fontsize: 12pt
+---
+
+## Exercise 1  
+
+To reduce ankle injuries, restrictive appliances such as taping and spatting (applying tape over the shoe and sock) have been employed. As part of a study at UW-L, subjects also completed a 5-point Likert-type scale survey regarding their perceptions of the movement of each ankle appliance during exercise.
+
+Researchers would like to compare the central values for perceptions of the movement of taped ankles compared to spatted ankles using $\alpha = 0.10$ and to estimate the difference with 90% confidence.
+
+### Part 1a
+
+Load the data set AnkleMovement.rda
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1a -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+library(DS705data)
+data(AnkleMovement)
+
+```
+
+---
+
+### Part 1b	
+
+Create a new variable of the differences, with the perceptions of the spatted ankle (spat) subtracted from the perceptions of the taped ankle (tape).
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1b -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+AnkleMovement['diff'] = with(AnkleMovement, tape-spat)
+
+```
+
+---
+
+### Part 1c  
+
+Create boxplots and histograms for the sample of differences. 
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1c -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+with(AnkleMovement, boxplot(diff, main='Difference of tape minus spot'))
+with(AnkleMovement, hist(diff, prob=TRUE, main='Difference of tape minus spat', xlab='Difference'))
+```
+
+---
+
+### Part 1d  
+
+Comment on the suitability of this data for the paired t-test, the Wilcoxon signed rank test, and the sign test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1d -|-|-|-|-|-|-|-|-|-|-|-
+
+For a paired t-test, the sampling distribution of the differences in a normal distribution and the differences are independent.
+
+For a Wilcoxon signed rank test, the sampling distribution of the differences must be symetrical about the median. Also, must be random sample of distributions.
+
+For the sign test, the only requirement is that the sample is randomly selected. However, this test tends to have a lower power.
+
+
+---
+
+### Part 1e 
+    
+Conduct an appropriate test to compare the central values for subject's perceptions of the movement of taped ankles compared to spatted ankles using $\alpha = 0.10$.
+
+#### Step 1
+
+Define the parameters in words in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e.step1 -|-|-|-|-|-|-|-|-|-|-|-
+
+
+$$\mu_\mbox{d}$$ is the mean difference in ratings of tape vs. spat of the population of all people. 
+
+#### Step 2
+
+State the null and alternative hypotheses for the test.
+ 
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e.step2 -|-|-|-|-|-|-|-|-|-|-|-
+
+$$H_0: \mu_\mbox{d} = 0$$
+$$H_a: \mu_\mbox{d} \neq 0$$
+
+#### Step 3
+
+Use R to generate the output for the test you selected.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e.step3 -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+with(AnkleMovement, wilcox.test(tape, spat, alternative='two.sided', paired=TRUE))
+
+```
+
+#### Step 4
+
+State both a statistical conclusion at $\alpha=0.10$ and interpret it in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 1e.step4 -|-|-|-|-|-|-|-|-|-|-|-
+
+We are not able to reject the the null hypothesis. That is to say, we are not able to say there is a difference in the means of the tape vs spat.
+
+---
+
+### Part 1f  
+
+Write an interpretation in the context of the problem for the 90% CI.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1f -|-|-|-|-|-|-|-|-|-|-|-
+
+With 90% confidence, the difference between the mean of tape of the population of all people is between 0.5 less than to 2.0 greater than the mean of spat of population of all people.
+
+---
+
+### Part 1g
+
+Which test and interval did you use?  Justify your choice, including some discussion of how well the conditions for the inference procedures were met.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g -|-|-|-|-|-|-|-|-|-|-|-
+
+I am most inclined to use the Wilcoxon signed rank test. We know the data is paired. The boxplot does not seem to indicate the data is a normal distribution.
+
+---
+
+## Exercise 2
+
+One hundred and twenty apparently healthy subjects volunteered to participate in this investigation.  All subjects completed pre- and post-tests measuring lumbar strength, and the treatment group trained on the BackUp™ Lumbar Extension Dynamometer (1 set of 20 reps twice per week) for 10 weeks.  
+
+Researchers would like to compare the central values for the pre- and post-training measurements for lumbar strength at $\alpha = 0.05$ and estimate the difference in lumbar strength with 95% confidence.
+
+### Part 2a  
+
+Load the data BackUp.rda
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2a -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+data(BackUp)
+
+```
+
+---
+
+### Part 2b  
+
+Create a new variable of the differences, with the post-training values (post) subtracted from the pre-training values (pre). 
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+BackUp <- cbind(BackUp, diff=BackUp[,'pre'] - BackUp[,'post'])>
+
+```
+
+---
+
+### Part 2c  
+
+Create boxplots and histograms for the sample of differences. 
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2c -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+hist(BackUp[,'diff'], prob=TRUE, main='Differences of pre and post BackUp Lumbar Extension Dynamometer', xlab='')
+boxplot(BackUp[,'diff'], prob=TRUE, main='Differences of pre and post BackUp Lumbar Extension Dynamometer', xlab='')
+
+```
+
+---
+
+### Part 2d  
+
+Comment on the suitability of this data for the paired t-test, the Wilcoxon signed rank test, and the sign test.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2d -|-|-|-|-|-|-|-|-|-|-|-
+
+The sample distribution of the differences is not normal as evident by the outliers. As such I will not be using the paried t-test. Additionally, I cannot say the sample distributions appear to be the same shape which is a requirement for the Wilcoxon signed rank test. As such, I will be using the sign test. 
+
+---
+
+### Part 2e 
+    
+Conduct an appropriate test to compare the central values for the pre- and post-training measurements for lumbar strength using $\alpha = 0.05$.  Since you're simply comparing the central values, a two-tailed test is appropriate.
+
+#### Step 1
+
+Define the parameters in words in the context of the proble
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.step1 -|-|-|-|-|-|-|-|-|-|-|-
+
+The difference in the pre and post-training for lumbar strength in all people of the population.
+
+
+
+#### Step 2
+
+State the null and alternative hypotheses for the test.
+ 
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.step2 -|-|-|-|-|-|-|-|-|-|-|-
+
+$$H_0: \mu_\mbox{d} = 0$$
+$$H_a: \mu_\mbox{d} < 0$$
+
+#### Step 3
+
+Use R to generate the output for the test you selected.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.step3 -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+library('signmedian.test')
+signmedian.test(BackUp[,'diff'], mu=0, alternative='less')
+
+```
+
+#### Step 4
+
+State both a statistical conclusion at $\alpha=0.05$ and interpret it in the context of the problem.
+
+#### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.step4 -|-|-|-|-|-|-|-|-|-|-|-
+
+At a 0.05 significance level, we are able to reject the null hypothesis (p-value = 0.006688). That is to say, it is resonable to conclude the pre-training population is less strong than the post-training population.
+
+
+---
+
+### Part 2f  
+
+Write an interpretation in the context of the problem for a 95% CI.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2f -|-|-|-|-|-|-|-|-|-|-|-
+
+We are 95% confident that the mean of the pre-training lumbar strength in the population is between 31.67 and 5.07 less than the mean of the post-training lumbar strength in the population.
+
+---
+
+### Part 2g
+
+Which test and interval did you use?  Justify your choice, including some discussion of how well the conditions for the inference procedures were met.
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g -|-|-|-|-|-|-|-|-|-|-|-
+
+Replace this text with your answer here.
+
+---
