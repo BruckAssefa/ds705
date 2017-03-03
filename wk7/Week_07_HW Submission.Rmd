@@ -64,6 +64,7 @@ Use the multcompView package to produce a boxplot and letters/T display illustra
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
+require(multcompView)
 padj_extract <- function(formula, data){posthoc$comp[,'p adj']}
 multcompBoxplot(Rev.per.mile ~ Type, data=Cars93, horizontal=TRUE, compFn='padj_extract')
 ```
@@ -76,7 +77,13 @@ Summarize your findings about the differences in population mean RPM for the dif
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1c -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer.
+We are 95% confident that the Large is 1235.75 to 461.86 less than the Compact. 
+We are 95% confident that the Small is 13.92 to 669.59 more than the Compact. 
+We are 95% confident the Medium is 229.73 to 959.36 more than the Large. 
+We are 95% confident the Small is 822.86 to 1558.26 more than the Large. 
+We are 95% confident the Sporty is 289.42 to 1085.51 more than the Large. 
+We are 95% confident the Small is 294.62 to 897.41 more than the Medium. 
+We are 95% confident the Sporty is 843.96 to 162.23 less than Small.
 
 ---
 
@@ -87,10 +94,13 @@ Use the REGWQ multi-step procedure (function regwqComp in DS705data) to test for
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1d -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+source('regwqComp.R')
+posthoc <- regwqComp(Rev.per.mile~Type,data=Cars93)
+posthoc[,c(1,4,5,6)]
+
 ```
 
-Replace this text with your answer.
+The results are the same.
 
 ---
 
@@ -107,7 +117,8 @@ boxplot(Price~Type,horizontal=TRUE)
 It should be fairly clear that the price data is not from  normal distributions, at least for several of the car types, but ignore that for now and use the Games-Howell procedure with confidence level 90% to do simultaneous comparisons (if interpreting the $P$-values use $\alpha=0.1$).  
 
 ```{r}
-# replace this with your code
+posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE)
+
 ```
 
 ---
@@ -119,7 +130,9 @@ Use the multcompView package to produce a boxplot and letters/T display illustra
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace this with your code
+padj_extract <- function(formula, data){posthoc$comp[,'p adj']}
+multcompBoxplot(Price ~ Type, data=Cars93, horizontal=TRUE, compFn='padj_extract')
+
 ```
 
 ---
@@ -130,7 +143,12 @@ Summarize the differences in the population mean prices for the different cars a
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2c -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer.
+At $\alpha=0.11$, we reject the null hypothesis for the Md-Cm, Sm-Cm, Sm-Lg, Sm-Md, and Sp-Sm pairs. 
+We are 95% confident the Medium is 0.067 to 17.95 more expensive than the Compact. 
+We are 95% confident the Small is 13.30 to 2.80 less expensive than the Compact.
+We are 95% confident the Small is 20.46 to 7.80 less expensive than the Large.
+We are 95% confident the Small is 24.91 to 9.19 less expensive than the Medium.
+We are 95% confident the Sporty is 2.47 to 16.00 more expensive than the Small.
 
 ---
 
@@ -145,7 +163,8 @@ Repeat part 2a) using bootstrapping, by setting nboot=10000, in the onewayComp()
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your code
+posthoc <- onewayComp(Price~Type, data=Cars93, nboot=10000)
+
 ```
 
 ---
@@ -157,7 +176,7 @@ Repeat 2b) using the results produced by bootstrapped Games-Howell.  Again use $
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your code
+posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE, nboot=10000)
 ```
 
 ---
