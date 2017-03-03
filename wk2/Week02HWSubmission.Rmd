@@ -67,7 +67,7 @@ qqnorm(sampleStat)
 qqline(sampleStat)
 ```
 
-No, the lower and upper values are above the line.
+No, the lower and upper values are above the line indicating right skew.
 
 ----
 
@@ -89,7 +89,7 @@ qqnorm(sampleStat)
 qqline(sampleStat)
 ```
 
-Yes, while the uper and lower values are closer to the line.
+Yes, the upper and lower values are closer to the line.
 
 ----
 
@@ -103,7 +103,7 @@ Using the data $\bar{x} = 5.0, s = 0.7, n = 50$ we can determine that the 95% $t
 
 ###  -|-|-|-|-|-|-|-|-|-|-|- Answer 2a -|-|-|-|-|-|-|-|-|-|-|-
 ```{r}
-ceiling(1.96^2 * 0.7^2 / 0.05^2)
+n <- ceiling(1.96^2 * 0.7^2 / 0.05^2)
 ```
 
 ---- 
@@ -116,7 +116,8 @@ Use R to build a fake data set with exactly the same statistics (as shown in the
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your code
+z <- rnorm(n)
+fakeData <- 0.68*(z-mean(z))/sd(z) + 5.03
 ```
 
 ----
@@ -141,10 +142,10 @@ Before using a t distribution based procedure we need to determine if it is plau
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your code
+hist(lead)
 ```
 
-Replace this text with your written answer.
+No. The data is very right skewed.
 
 ----
 
@@ -155,10 +156,10 @@ Use R to construct a 80% CI for the population mean lead concentration.  Write a
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your code
+ t.test(lead, conf.level=0.80)$conf.int
 ```
 
-Replace this text with your written answer.
+We are 80% confident that the population mean is between 29.27551 and 45.21098
 
 ---- 
 
@@ -167,7 +168,8 @@ Note that your 80% CI for the population mean also gives you a 90% lower confide
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3c -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your written answer.
+No, this does not suggest that the lead concentration is larger than 30 mg/kg at the $\alpha = 0.10$ significance level. An 80% confidence interval means that roughly 10% is below the given lower bound. That means at  $\alpha = 0.10$ we can only say the population is greater than 29.27551. 
+
 
 ----
 
@@ -177,16 +179,20 @@ Use R to conduct a one-sample $t$-test to determine if the population mean lead 
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3d -|-|-|-|-|-|-|-|-|-|-|-
 
-(Step 1) The hypotheses $H_0: \mu = 17$ and $H_a: \mu < 17$  (change!)
+(Step 1) The hypotheses $H_0: \mu = 30$ and $H_a: \mu > 30$
 
 (Step 2) Already did this in 3a.
 
 (Step 3) Compute:  
 ```{r}
 
+t.test(lead, alternative='greater', mu=30)
+
 ```
 
 (Step 4) Conclusion:
+
+At .10 significance, we fail to reject the null hypothesis (p-value 0.1215) 
 
 ----
 
@@ -197,22 +203,22 @@ Since the lead concentrations are very skewed and the sample size is relatively 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3e -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r, fig.width=5,fig.height=3}
-chol <- HealthExam$Cholesterol[HealthExam$Sex=="M"]
-n <- length(chol)
-xbar <- mean(chol)
-s <- sd(chol)
+#lead <- HealthExam$Cholesterol[HealthExam$Sex=="M"]
+n <- length(lead)
+xbar <- mean(lead)
+s <- sd(lead)
 
 reps <- 10000
 t_sim <- numeric(reps)
 
 # generate bootstrapped sampling distribution
 for (i in 1:reps){
-  x <- sample(chol,n,replace=TRUE)
+  x <- sample(lead,n,replace=TRUE)
   t_sim[i] <- (mean(x)-xbar)/(sd(x)/sqrt(n))
 }
 
 # build boostrapped "Studentized" t-inverval for mu
-alpha <- .05
+alpha <- .20
 prbs <- c( 1-alpha/2, alpha/2 )
 
 tcrit_est <- unname(quantile(t_sim, prob = prbs ))
@@ -220,7 +226,7 @@ t_ci_bootstrap <- xbar - tcrit_est*s/sqrt(n)
 t_ci_bootstrap
 
 # for comparison here is the t-interval from theory
-t_ci_theory <- as.vector(t.test(chol)$conf.int)
+t_ci_theory <- as.vector(t.test(lead)$conf.int)
 t_ci_theory
 
 # Compare the bootstrapped sampling distribution to the
@@ -230,11 +236,11 @@ par(mar=(c(4,.5,0,.5)),yaxs="i",bty="l",xaxs="i",yaxt="n")
 brks <- seq(min(t_sim),max(t_sim),length=50)
 hist(t_sim,prob=TRUE,breaks=brks,main='',xlab='t',ylab='')
 x0 <- seq(-4,4,length=400)
-y0 <- dt(x0,df=39)
+y0 <- dt(x0,df=36)
 points(x0,y0,type='l',lwd=2,col='blue')
 ```
 
-Written answer here.
+The bootstrap confidence interval and the theory confidence interval are very close at the upper bound (approx. 49 each). However for the bootstrap CI, the lower bound is higher. This causes a lower confidence interval width. This suggests less uncertainty in what we think the true population mean is.
 
 ----
 
@@ -245,10 +251,10 @@ Using the bootstrapped sampling distribution approximate the $P$-value of the hy
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3f -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r,echo=FALSE, fig.width=5,fig.height=3}
-n <- length(chol)
-xbar <- mean(chol)
-s <- sd(chol)
-mu0 <- 320
+n <- length(lead)
+xbar <- mean(lead)
+s <- sd(lead)
+mu0 <- 30
 t0 <- (xbar-mu0)/(s/sqrt(n))
 p0 = pt(t0,df = n-1, lower.tail=FALSE)
 
@@ -256,7 +262,7 @@ reps <- 10000
 t_sim <- numeric(reps)
 
 for (i in 1:reps){
-  x <- sample(chol,n,replace=TRUE)
+  x <- sample(lead,n,replace=TRUE)
   t_sim[i] <- (mean(x)-xbar)/(sd(x)/sqrt(n))
 }
 
@@ -269,9 +275,10 @@ brks <- seq(min(t_sim),max(t_sim),length=50)
 par(mar=(c(4,.5,0,.5)),yaxs="i",bty="l",xaxs="i",yaxt="n")
 hist( t_sim, prob=TRUE, breaks=brks,main='',xlab='t',ylab='')
 points(xpts,ypts,type = 'l',col='blue',lwd=2)
-points(c(t0,t0),c(0,dt(t0,df=39)),type='l',col='red',lwd=2)
+points(c(t0,t0),c(0,dt(t0,df=36)),type='l',col='red',lwd=2)
 text(2.2,.2,bquote(P%~~%.(p1)))        
 ```
+The bootstrap p-value is lower at 0.0709 compared to 0.1215. This means at the 0.10 significance level we are able to reject the null hypothesis in the bootstrapped sampling distribution and not in the theory. 
 
 ----
 
@@ -281,7 +288,8 @@ Which do you trust more and why?  The results of the bootstrap procedures or the
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3g -|-|-|-|-|-|-|-|-|-|-|-
 
-You text replaces this .
+The bootstrap more accurately reflects the distribution. The bootstrap confidence interval is skewed in the same way as the original data set.
+
 
 ----
 
@@ -292,7 +300,7 @@ Suppose it would be worthwhile to be able to detect an alternative mean lead con
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3h -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# your code goes here
+power.t.test(n = 37, delta=10, sd=37.1, sig.level=0.90, type='one.sample', alternative='one.sided')
 ```
 
 ----
@@ -304,7 +312,7 @@ Suppose we need the power to be 0.9 to be able to detect an alternative mean lea
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3i -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# your code goes here
+power.t.test(power = 0.9, delta=10, sd=37.1, type='one.sample', alternative='one.sided')$n
 ```
 
 ----

@@ -156,7 +156,7 @@ Create a new variable of the differences, with the post-training values (post) s
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-BackUp <- cbind(BackUp, diff=BackUp[,'pre'] - BackUp[,'post'])>
+BackUp <- cbind(BackUp, diff=BackUp[,'pre'] - BackUp[,'post'])
 
 ```
 
@@ -248,6 +248,6 @@ Which test and interval did you use?  Justify your choice, including some discus
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this text with your answer here.
+Because the data had outliers (non normal) and I did not have enough evidence to say the two distributions had the same shape, I chose the sign test. I would have preferred another test, as the sign test has less power. 
 
 ---

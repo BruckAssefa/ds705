@@ -1,7 +1,7 @@
 ---
 title: 'Lab Assignment: Two-Sample t-Procedures'
 author: "Paul Isaacson"
-date: "Jan. 2, 2017"
+date: "Feb. 2, 2017"
 output: word_document
 fontsize: 12pt
 ---
@@ -83,7 +83,7 @@ with(WormSheep, shapiro.test(worms[treated=='treated']))
 with(WormSheep, shapiro.test(worms[treated=='untreated']))
 
 ```
-At a .05 significance, it is plausible that both the treated (p-value 0.6504) and the untreated (p-value 0.5491) came from a normal distribution.
+At a .05 significance level, it is plausible that both the treated (p-value 0.6504) and the untreated (p-value 0.5491) came from a normal distribution.
 
 ---
 
@@ -94,10 +94,12 @@ Conduct an appropriate test to determine if the worm counts in each population c
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1f -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
+library(car)
 leveneTest(worms~treated, data=WormSheep)
 
 ```
-At .05 significance, we fail to reject the null hypothesis (p-value 0.7104). In other words, it is entirely plausible that the variables are equal.
+At .05 significance level, we fail to reject the null hypothesis (p-value 0.7104). In other words, it is entirely plausible that the variables are equal.
+
 ---
 
 ### Part 1g	
@@ -141,7 +143,7 @@ State both a statistical conclusion at $\alpha=0.05$ and interpret it in the con
 
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 1g.step4 -|-|-|-|-|-|-|-|-|-|-|-
 
-At a .05 significance, we are able to reject the null hypothesis. That is to say, there is sufficent evidence to claim that the population mean of worms in sheep for the treated group is different than the population mean of worms in sheep for the untreated group.
+At a .05 significance level, we are able to reject the null hypothesis. That is to say, there is sufficient evidence to claim that the population mean of worms in sheep for the treated group is different than the population mean of worms in sheep for the untreated group.
 
 ---
 
@@ -190,7 +192,7 @@ Create boxplots and histograms for each group (previous typing class vs. self-ta
 ```{r}
 boxplot(Words ~ Method, data=Typing, xlab='Method', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed')
 
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 with(Typing, hist(Words[Method=='prior course'], xlab='Prior course', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
 with(Typing, hist(Words[Method=='self-taught'], xlab='Self-taught', ylab='Words per minute typed', main='Prior course vs. self-taught words per minute typed', xlim=c(20,55), breaks=c(20,25,30,35,40,45,50,55)))
 
@@ -231,7 +233,7 @@ with(Typing, shapiro.test(Words[Method=='self-taught']))
 
 ```
 
-It appears as though the students with a prior course is from a normal distribution(p-value 0.6362). It is less clear whether the students who were self-taught is from a normal distribution (p-value 0.1025) However, I am willing to accept that it was using a signifance of 0.5.
+It appears as though the students with a prior course is from a normal distribution (p-value 0.6362). It is less clear whether the students who were self-taught is from a normal distribution (p-value 0.1025) However, I am willing to accept that it was using a significance level of 0.5.
 
 ---
 
@@ -288,7 +290,7 @@ State both a statistical conclusion at $\alpha=0.10$ and interpret it in the con
 #### -|-|-|-|-|-|-|-|-|-|-|- Answer 2g.step4 -|-|-|-|-|-|-|-|-|-|-|-
 
 
-At a .05 signifance, we are able to reject the null hypothesis. That is to say, the population mean of all students words per minute typed for prior course students is different than the population mean of all students words per minute typed for self-taught students.
+At a .05 significance level, we are able to reject the null hypothesis. That is to say, the population mean of all students words per minute typed for prior course students is different than the population mean of all students words per minute typed for self-taught students.
 
 ---
 
