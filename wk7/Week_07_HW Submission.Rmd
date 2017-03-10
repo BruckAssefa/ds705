@@ -52,7 +52,9 @@ Use a one step procedure to find a family of 95% simultaneous confidence interva
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-posthoc <- onewayComp(Rev.per.mile~Type, data=Cars93)$comp[,2:3]
+source('onewayComp.R')
+posthoc <- onewayComp(Rev.per.mile~Type, data=Cars93)
+posthoc$comp[,2:3]
 ```
 
 ---
@@ -77,13 +79,21 @@ Summarize your findings about the differences in population mean RPM for the dif
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 1c -|-|-|-|-|-|-|-|-|-|-|-
 
-We are 95% confident that the Large is 1235.75 to 461.86 less than the Compact. 
-We are 95% confident that the Small is 13.92 to 669.59 more than the Compact. 
-We are 95% confident the Medium is 229.73 to 959.36 more than the Large. 
-We are 95% confident the Small is 822.86 to 1558.26 more than the Large. 
-We are 95% confident the Sporty is 289.42 to 1085.51 more than the Large. 
-We are 95% confident the Small is 294.62 to 897.41 more than the Medium. 
-We are 95% confident the Sporty is 843.96 to 162.23 less than Small.
+We are 95% confident that:
+
+The Large is 1235.75 to 461.86 less than the Compact. 
+
+The Small is 13.92 to 669.59 more than the Compact. 
+
+The Medium is 229.73 to 959.36 more than the Large. 
+
+The Small is 822.86 to 1558.26 more than the Large. 
+
+The Sporty is 289.42 to 1085.51 more than the Large. 
+
+The Small is 294.62 to 897.41 more than the Medium. 
+
+The Sporty is 843.96 to 162.23 less than Small.
 
 ---
 
@@ -100,7 +110,7 @@ posthoc[,c(1,4,5,6)]
 
 ```
 
-The results are the same.
+It appears that in this case, both tests result in rejecting the null hypothesis for the same pairs at $\alpha=0.05$
 
 ---
 
@@ -118,6 +128,7 @@ It should be fairly clear that the price data is not from  normal distributions,
 
 ```{r}
 posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE)
+posthoc
 
 ```
 
@@ -130,7 +141,7 @@ Use the multcompView package to produce a boxplot and letters/T display illustra
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-padj_extract <- function(formula, data){posthoc$comp[,'p adj']}
+padj_extract <- function(formula, data){posthoc$comp[,'p adj']/2}
 multcompBoxplot(Price ~ Type, data=Cars93, horizontal=TRUE, compFn='padj_extract')
 
 ```
@@ -144,11 +155,18 @@ Summarize the differences in the population mean prices for the different cars a
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2c -|-|-|-|-|-|-|-|-|-|-|-
 
 At $\alpha=0.11$, we reject the null hypothesis for the Md-Cm, Sm-Cm, Sm-Lg, Sm-Md, and Sp-Sm pairs. 
-We are 95% confident the Medium is 0.067 to 17.95 more expensive than the Compact. 
-We are 95% confident the Small is 13.30 to 2.80 less expensive than the Compact.
-We are 95% confident the Small is 20.46 to 7.80 less expensive than the Large.
-We are 95% confident the Small is 24.91 to 9.19 less expensive than the Medium.
-We are 95% confident the Sporty is 2.47 to 16.00 more expensive than the Small.
+
+We are 95% confident that:
+
+The Medium is 0.067 to 17.95 more expensive than the Compact. 
+
+The Small is 13.30 to 2.80 less expensive than the Compact.
+
+The Small is 20.46 to 7.80 less expensive than the Large.
+
+The Small is 24.91 to 9.19 less expensive than the Medium.
+
+The Sporty is 2.47 to 16.00 more expensive than the Small.
 
 ---
 
@@ -164,6 +182,7 @@ Repeat part 2a) using bootstrapping, by setting nboot=10000, in the onewayComp()
 
 ```{r}
 posthoc <- onewayComp(Price~Type, data=Cars93, nboot=10000)
+posthoc
 
 ```
 
@@ -177,6 +196,7 @@ Repeat 2b) using the results produced by bootstrapped Games-Howell.  Again use $
 
 ```{r}
 posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE, nboot=10000)
+posthoc
 ```
 
 ---
@@ -187,13 +207,21 @@ Explain these results in context as you did in 2c).
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3c -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this with your answer.
+At $\alpha=0.11$, we reject the null hypothesis for the Sm-Cm, Sm-Lg, Sm-Md, and Sp-Sm pairs
+
+We are 95% confident the Small is 14.51 to 1.58 less expensive than the Compact. 
+
+We are 95% confident the Small is 21.47 to 6.80 less expensive than the Large. 
+
+We are 95% confident the Small is 26.98 to 7.12 less expensive than the Medium.
+
+We are 95% confident the Sporty is 1.08 to 17.37 more expensive than the Small.
 
 ---
 
 ## Exercise 4.
 
-One step procedures like Tukey-Kramer and Games-Howell are conservative (lower power) so they can miss significant differences between population means.  If you don't need the confidence intervals, then a multi-step procedure such as the Bonferroni-Holm step-down procudere may be used to get more power.  
+One step procedures like Tukey-Kramer and Games-Howell are conservative (lower power) so they can miss significant differences between population means.  If you don't need the confidence intervals, then a multi-step procedure such as the Bonferroni-Holm step-down procedure may be used to get more power.  
 
 ### Part 4a
 
@@ -202,6 +230,8 @@ Repeat 2a, but this time use the Bonferroni-Holm procedure at $\alpha=0.1$ to co
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
+posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE, nboot=10000, adjust='holm')
+posthoc
 ```
 
 ---
@@ -213,6 +243,9 @@ Repeat 2b to produce the boxplot with T and letter displays for the output in 4a
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
+padj_extract <- function(formula, data){posthoc$comp[,'p adj']/2}
+multcompBoxplot(Price ~ Type, data=Cars93, horizontal=TRUE, compFn='padj_extract')
+
 ```
 
 ---
@@ -223,7 +256,7 @@ As in 2c, explain the mean price comparisons in context.  Did you find any mean 
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4c -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace Text with your answer.
+At $\alpha = 0.1$, we reject the null hypothesis for Md-Cm, Sm-Cm, Sm-Md, and Sp-Sm pairs. I do not see any new price differences.
 
 ---
 
@@ -233,15 +266,22 @@ In Exercises 2, 3, and 4 you used 3 different methods to analyze the differences
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4d -|-|-|-|-|-|-|-|-|-|-|-
 
+In my opinion, the bootstrapped version is most appropriate. This is because the Price data is most likely not normally distributed (required for Exercise 2). I also like the confidence intervals that it provides which is not the case with Exercise 4.
+
 ---
 
 ## Exercise 5
 
-Build a custom contrast matrix that compares the the average of average small and compact prices to the average of the other car types and also compares the mean prices of the midsize and compact cars. (You may have to use `levels(Type)` to see the ordering of the levels)  Use the Bonferroni-Holm procedure at the 10% significance level with bootstrapping and unequal variances to make the comparisons.  Summarize your results.
+Build a custom contrast matrix that compares the average of average small and compact prices to the average of the other car types and also compares the mean prices of the midsize and compact cars. (You may have to use `levels(Type)` to see the ordering of the levels)  Use the Bonferroni-Holm procedure at the 10% significance level with bootstrapping and unequal variances to make the comparisons.  Summarize your results.
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 5 -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
+K <- rbind('Sm-Cm to Other'=c(-1/2,1/3,1/3,-1/2,1/3),
+           'Midsize to Compact'=c(1,0,-1,0,0))
+
+posthoc <- onewayComp(Price~Type, data=Cars93, var.equal=FALSE, nboot=10000, adjust='holm', con=K)
+posthoc
 ```
 
 ---
@@ -252,21 +292,21 @@ Since the price distributions are skewed it makes more sense to talk about media
 
 ### Part 6a
 
-The Kruskal-Wallis and Dunn procedures aren't appropritate for comparing population median prices, why?  Explain.
+The Kruskal-Wallis and Dunn procedures aren't appropriate for comparing population median prices, why?  Explain.
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6a -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace with your text.
+These require distributions with the same shape, only possibly shifted from one and another.
 
 ---
 
 ### Part 6b
 
-We're going to make 4 simulataneous confidence intervals for price data (compact - small, sporty-small, midsize-sporty, midsize-compact).  If we want familywise confidence level 90%, what confidence level should you use for each individual comparison according to the Bonferroni correction?
+We're going to make 4 simultaneous confidence intervals for price data (compact - small, sporty-small, midsize-sporty, midsize-compact).  If we want familywise confidence level 90%, what confidence level should you use for each individual comparison according to the Bonferroni correction?
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6b -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace with your text.
+for 90% confidence, $\alpha = 0.10$. We have 4 comparisons, so each individual $\alpha$ needs to be 0.025 (0.10/4). As such, the confidence level for each needs to be 97.5% (1-0.025)
 
 ---
 
@@ -277,6 +317,22 @@ Use the boot package (as in the class presentation) to bootstrap the 4 confidenc
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r echo=TRUE}
+require(boot)
+bootMedianDiff <- function(d, i)
+{
+    medians <- tapply(d[i,5],d[,3],median)
+    c(
+      medians[1]-medians[4], 
+      medians[5]-medians[4], 
+      medians[3]-medians[5], 
+      medians[3]-medians[1] 
+     )
+}
+boot.object <- boot(Cars93, bootMedianDiff, R=5000, strata=Cars93$Type)
+boot.ci(boot.object, conf=1 - 0.10 /4, type='bca', index=1)$bca[4:5]
+boot.ci(boot.object, conf=1 - 0.10 /4, type='bca', index=2)$bca[4:5]
+boot.ci(boot.object, conf=1 - 0.10 /4, type='bca', index=3)$bca[4:5]
+boot.ci(boot.object, conf=1 - 0.10 /4, type='bca', index=4)$bca[4:5]
 ```
 
 ### Part 6d
@@ -285,7 +341,15 @@ Explain the results of your intervals.
 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6d -|-|-|-|-|-|-|-|-|-|-|-
 
-Replace this with your answer.
+We are 90% confident that:
+
+Compact is 2.35 to 10.65 more expensive than Small
+
+Sporty is 3.35 to 14.10 more expensive than Small
+
+Midsize in 0.30 to 19.55 more expensive than Sporty
+
+Midsize is 1.00 to 19.41 more expensive than Compact
 
 ---
 
@@ -305,10 +369,11 @@ The boxplot shows that the distributions of ozone levels are similar, if not ide
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 7 -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# replace with your r  code
+require(dunn.test)
+with(airquality, dunn.test(Ozone, Month, method='holm', alpha=0.05))
 ```
 
-Replace this text.
+The month pairs of 5-7, 8-5, 9-7, 9-8 show differences.
 
 ---
 
