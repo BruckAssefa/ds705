@@ -301,23 +301,6 @@ Check to see if the linear regression model assumptions are reasonable for this 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.1 -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
-
-```
-
-Replace this text with your answer here
-
-
-```{r echo=FALSE}
-# leave alone, this block for grading
-scoreFunction("2e.1",0,3)
-```
-
-(Step 2) Plot the residuals against the fitted values.  Does the equal variances assumption seem reasonable?  Does the linear regression line seem to be a good fit?
-
-### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.2 -|-|-|-|-|-|-|-|-|-|-|-
-
-```{r}
 resids <- fit$resid
 price <- diamond$price
 carat <- diamond$carat
@@ -332,6 +315,23 @@ shapiro.test(resids)
 ```
 
 Yes, the residuals are normal. The histogram, normal probability plot, and the boxplot all indicate this. Additionally, the Shapiro-Wilk normality test also indicates the residuals are normal (p-value = 0.8406).
+
+
+```{r echo=FALSE}
+# leave alone, this block for grading
+scoreFunction("2e.1",0,3)
+```
+
+(Step 2) Plot the residuals against the fitted values.  Does the equal variances assumption seem reasonable?  Does the linear regression line seem to be a good fit?
+
+### -|-|-|-|-|-|-|-|-|-|-|- Answer 2e.2 -|-|-|-|-|-|-|-|-|-|-|-
+
+```{r}
+plot(caratFit, resids)
+abline(h=0, lty='dashed')
+```
+
+Yes, the equal variances assumption seems reasonable. The linear regression model seems like a good fit. There are no remaining trends in the residuals.
 
 
 ```{r echo=FALSE}
@@ -408,7 +408,28 @@ Create 95% prediction and confidence limits for the population mean price for th
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 2i -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+par(mar=c(2.5,4,.15,.15))
+xplot <- data.frame(carat = seq( .10, .40, length=20) )
+fittedC <- predict(fit,xplot,interval="confidence")
+fittedP <- predict(fit,xplot,interval="prediction")
+
+# scatterplot
+ylimits <- c(min(fittedP[,"lwr"]),max(fittedP[,"upr"]))
+par(las=1)
+plot(carat, price, ylim=ylimits, xaxt='n', yaxt='n', xlab='')
+axis(2,mgp=c(3,.5,0))
+axis(1,mgp=c(3,.3,0))
+mtext(side=1,text='Price',line=1.5)
+abline(fit)
+             
+# plot the confidence and prediction bands
+lines(xplot[,1], fittedC[, "lwr"], lty = "dashed", col='darkgreen',lwd=2)
+lines(xplot[,1], fittedC[, "upr"], lty = "dashed", col='darkgreen',lwd=2)
+lines(xplot[,1], fittedP[, "lwr"], lty = "dotted", col='blue',lwd=2)
+lines(xplot[,1], fittedP[, "upr"], lty = "dotted", col='blue',lwd=2)
+
+# lines(xplot[201,1]*c(1,1),fittedP[201,c(2,3)],col="red",lty="dotted",lwd=2)
+
 
 ```
 
@@ -434,11 +455,15 @@ Conduct the appropriate test of significance to test the following research ques
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+count <- matrix(c(226, 46, 198, 30), nrow=2)
+rownames(count) <- c('Rh_plus', 'Rh_minus')
+colnames(count) <- c('A_B_AB', 'O')
+result <- chisq.test(count)
+result
 
 ```
 
-Replace this text with your answer here.
+At $\alpha = 0.05$, we fail to reject the null hypothesis (p-value = 0.2986). That is to say, we fail to say Rh factor is associated with blood type.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -452,11 +477,13 @@ Compute and interpret the odds ratio of having Type O blood for Rh+ compared to 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+odds_o_rhplus <- 198 / (424-198)
+odds_o_rhminus <- 30 / (76-30)
+odds_o_rhplus / odds_o_rhminus
 
 ```
 
-Replace this text with your answer here.
+The odds of having the Rh+ factor is 34% more than the odds of having the Rh- factor when blood type is O.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -470,11 +497,11 @@ Construct and interpret a 90% confidence interval for the population proportion 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 3c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+oddsRatio(count, conf.level = 0.90, verbose=TRUE)
 
 ```
 
-Replace this text with your answer here.
+With 90% confidence, the odds of of having Rh+ factor are between 11.55% less to 104% more than the odds of having the Rh- factor when blood type is O. Because this contains the value of 1, wether having blood type O affects the odds of having Rh+ or Rh- factor.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
