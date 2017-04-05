@@ -211,6 +211,7 @@ Begin by creating a scatterplot and comment on the suitability of a linear regre
 
 ```{r}
 data(diamond)
+diamond <- diamond[-42,]
 plot(price~carat, diamond, xlab='Carats', ylab='Price', main='Diamonds')
 
 ```
@@ -525,11 +526,13 @@ Identify the predictor variables in the final model as well as the AIC for that 
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+data(shells)
+full <- lm(Y~., data=shells)
+step(full, direction="both")
 
 ```
-
-Replace this text with your answer here.
+X1, X2, X4, X6, X7
+AIC = -121.99
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -545,11 +548,13 @@ Does this model suffer from multicollinearity?  Explain your answer.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4b -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+modelA <- lm(Y ~ X1 + X2 + X4 + X6 + X7, data=shells)
+library(HH)
+vif(modelA)
 
 ```
 
-Replace this text with your answer here.
+No, the model does not suffer from multicollinearity. The VIF for all predictors is under 5.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -569,11 +574,13 @@ Which model is the better fitting model according to AIC?  Explain your answer.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+X2_squared <- with(shells, X2)^2
+modelB <- lm(Y ~ X1 + X2 + X2_squared + X4 + X6, data=shells)
+extractAIC(modelB)
 
 ```
 
-Replace this text with your answer here.
+The model B is the better fitting model according to AIC. The AIC value for model B is -129.4831 compare to an AIC value of -121.9933 for model A.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -589,11 +596,11 @@ Does this model suffer from multicollinearity?  Explain your answer.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4d -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+vif(modelB)
 
 ```
 
-Replace this text with your answer here.
+Yes, the model does suffer from multicollinearity. Both the predictor variable X2 and $X2^2$ have a VIF greater than 5 (373.68 and 369.49).
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -609,11 +616,14 @@ Does this model suffer from multicollinearity?  Explain your answer.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4e -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+cX2 <- with(shells, X2-mean(X2))
+cX2sq <- cX2^2
+modelC <- lm(Y ~ X1 + cX2 + cX2sq + X4 + X6, data=shells)
+vif(modelC)
 
 ```
 
-Replace this text with your answer here.
+No, the model does not suffer from multicollinearity. The VIF for all predictors is under 5.
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -629,11 +639,12 @@ Explain what adjusted R-squared measures and state which model is "better" accor
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4f -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+summary(modelA)
+summary(modelC)
 
 ```
 
-Replace this text with your answer here.
+The adjusted R-squared is similar to the R-squared in that it determines the amount of variability in the response than can be explained by the model. The adjusted R squared also takes into account the number of predictor variables and only increases if the new term improves the model more than would be expected by chance. In our case model C has a higher adjusted R-squared compared to model A (0.9622 to 0.9514)
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -649,11 +660,11 @@ Describe the outcome of this test.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4g -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+dwtest(modelC)
 
 ```
 
-Replace this text with your answer here.
+At $\alpha = 0.05$, we fail to reject the null hypothesis (p-value = 0.9895). That is to say, we cannot say that the true autocorrelation is greater than 0. 
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -669,11 +680,15 @@ Write an interpretation for the interval in the context of this problem.
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 4h -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+newcX2 <- with(shells, 2.4-mean(X2))
+newcX2sq <- newcX2^2
+newdata <- data.frame(X1=3.6, cX2=newcX2, cX2sq=newcX2sq, X4=3.0, X6=48)
+predict(modelC, newdata, interval='prediction')
+
 
 ```
 
-Replace this text with your answer here.
+With 95% confidence, the prediction interval for shell height for the carinate dove shell will be between 6.91mm and 7.36mm.  
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
