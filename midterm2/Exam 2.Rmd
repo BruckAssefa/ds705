@@ -709,11 +709,16 @@ Conduct the hypothesis test to determine if the distribution of Primary News Sou
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 5 -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+observed = c(38, 20, 15, 42)
+proportions = c(.45, .18, .16, .21)
+chisq.test(x=observed, p=proportions)
 
 ```
 
-Replace this text with your answer here.
+$H_0: \pi_{TV} = 0.45, \pi_{Radio} = 0.18, \pi_{Newspaper} = 0.16, \pi_{Internet} = 0.21$
+$H_a:\ At\ least\ one\ \pi_i\ differs\ from\ another$
+
+$At \alpha = 0.10, we reject the null hypothesis (p-value = 0.000558). At least one of the the primary news sources from 2015 differs from the 1995 population.$
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -735,11 +740,11 @@ At a 5% level of significance, should either variable be dropped from the model?
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6a -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+fit <- glm(taste ~ acetic + person, data=cheese, family='binomial')
 
 ```
 
-Replace this text with your answer here.
+At $\alpha = 0.05$, both variables should remain in the model(acetic p-value = 0.0483 and person p-value = 0.0239).
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -754,11 +759,11 @@ Convert the estimated coefficient of **acetic** to an odds ratio and interpret i
 
 
 ```{r}
-# Insert your R code here.
+oddsr <- exp(fit$coefficients['acetic'])
 
 ```
 
-Replace this text with your interpretation here.
+The odds of rating the cheese as "Acceptable" increase by 16.23  for ever 1 unit increase in acetic. 
 
 ```{r echo=FALSE}
 # leave alone, this block for grading
@@ -772,7 +777,8 @@ Compute the predicted probability of a child finding the taste of the cheese acc
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6c -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+newdata <- data.frame(acetic=6, person='Child')
+predict(fit, newdata, type='response')
 
 ```
 
@@ -788,7 +794,12 @@ Compute a 95% confidence interval for the predicted probability of a child findi
 ### -|-|-|-|-|-|-|-|-|-|-|- Answer 6d -|-|-|-|-|-|-|-|-|-|-|-
 
 ```{r}
-# Insert your R code here.
+out <- predict(fit, newdata, se.fit=TRUE)
+C <- 0.95
+crit <- qnorm(1 - (1-C) / 2)
+lower <- exp(out$fit - crit * out$se.fit) / (1 + exp(out$fit - crit * out$se.fit))
+upper <- exp(out$fit + crit * out$se.fit) / (1 + exp(out$fit + crit * out$se.fit))
+c(lower, upper)
 
 ```
 
