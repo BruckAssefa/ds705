@@ -59,7 +59,7 @@ prop.test(c(9, 27), c(23, 83), correct=FALSE)
 
 ```
 
-We are 95% that the difference in proporations for the population of patients without CP who get a positive test and for the population of patients with CP who get a positive test is -0.18 to 0.29. 
+We are 95% that the difference in proportions for the population of patients without CP who get a positive test and for the population of patients with CP who get a positive test is -0.18 to 0.29. 
 
 ### Part 1d
 
@@ -69,7 +69,7 @@ If one person is selected randomly, what is the risk of having CP given that the
 
 ```{r}
 prop1 <- 9/36
-
+prop1
 ```
 
 ### Part 1e
@@ -80,7 +80,7 @@ If one person is selected randomly, what is the risk of having CP given that the
 
 ```{r}
 prop2 <- 14/70
-
+prop2
 ```
 
 ### Part 1f
@@ -102,7 +102,7 @@ What are the odds of having CP given that the patient has a positive Clarke’s 
 
 ```{r}
 odds1 <- 9/27 
-
+odds1
 ```
 
 ### Part 1h
@@ -113,7 +113,7 @@ What are the odds of having CP given that the patient has a negative Clarke’s 
 
 ```{r}
 odds2 <- 14/56  
-
+odds2
 ```
 
 ### Part 1i
@@ -133,7 +133,7 @@ Write an interpretation of the odds ratio as a percent.
 
 ### Answer 1j
 
-The odds of having CP is 33% higher when the Clarke's Sign test is positive verus when it is negative.
+The odds of having CP is 33% higher when the Clarke's Sign test is positive versus when it is negative.
 
 ### Part 1k
 
@@ -142,11 +142,11 @@ Construct a 95% confidence interval for the OR of having CP for those who have a
 ### Answer 1k
 
 ```{r}
-# Insert your R code here.
+oddsRatio(cp, verbose=TRUE)
 
 ```
 
-Replace this text with your interpretation here.
+We are 95% confident that the odds of having CP when the test is negative is 28.90% to 195% that of having CP when the test is positive. (Note: the odds ratio function in R is computing the odds ratio as Odds 2 / Odds 1 and the confidence interval is based on that)
 
 ## Exercise 2
 
@@ -180,11 +180,13 @@ Create vectors for the counts and hypothesized probabilities, then conduct the c
 ### Answer 2a
 
 ```{r}
-# Insert your R code here.
+observed <- c(14, 15, 22, 30, 19, 25)
+proportions <- c(0.15, 0.09, 0.29, 0.21, 0.12, 0.14)
+chisq.test(x=observed, p=proportions)
 
 ```
 
-Replace this text with your interpretation here.
+At $\alpha = 0.05$, we fail to reject the null hypothesis test (p = 0.02461). That is to say, we cannot say that the observed values differ significantly from described proportions.
 
 ### Part 2b  
 
@@ -193,11 +195,11 @@ Compute the expected cell counts and verify that they are all large enough for t
 ### Answer 2b
 
 ```{r}
-# Insert your R code here.
+125*proportions
 
 ```
 
-Replace this text with your interpretation here.
+To get the expected values we are multiplying the total sample size with the proportions. We have a requirement that all expected values (not observed values) have a value greater than 5. This sample passes that requirement.
 
 ## Exercise 3
 
@@ -210,7 +212,7 @@ Create a 2x2 matrix with the correct cell counts.  Arrange it so that the column
 ### Answer 3a
 
 ```{r}
-# Insert your R code here.
+seatBelt <- matrix(c(17,3,12,8), nrow=2)
 
 ```
 
@@ -221,8 +223,14 @@ With the small cell counts in mind, use the appropriate test to determine if pro
 ### Answer 3b
 
 ```{r}
-# Insert your R code here.
-
+result <- chisq.test(seatBelt)
+result$expected
+result
 ```
 
-Replace this text with your answer here.
+$H_0:Age\ group\ and\ seat\ belt\ wearing\ is\ independent$
+$H_a:Age\ group\ and\ seat\ belt\ wearing\ are\ associated$
+
+At $\alpha = 0.05$, we fail to reject the null hypothesis (p-value = 0.1567). We do not have enough evidence to say that the proportions of people wearing seat belts is the same between the teens and senior population. Also, we check that all expected values are > 5. In this case they are, so we will stick with the chi-square test vs the Fisher's Exact test.  
+
+

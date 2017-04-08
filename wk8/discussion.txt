@@ -1,0 +1,16 @@
+As I search university and industry sites, it does appear that the bootstrap may be a viable alternative to more traditional procedures. It seems the approach is generally regarded as simple and straight forward [1]. It requires less assumptions about true population distributions. 
+
+Burn statistics and others made a couple good points to keep in mind. First, bootstrapping may be a problem for procedures that are sensitive to ties [2]. Additionally, it seems very important that our original sample is independent [2]. 
+
+On the point of independence, I do have a desire to study this topic more. I feel that it is often mentioned in texts but perhaps glossed over. Does anyone have an good resources to do a deep dive on sampling Independence.
+
+Bootstrapping was invented in the 1970's, a point when the computational requirements could not be met. With adequate computational power today, I see no reason bootstrapping should not be used regularly. We need to make sure the assumption that the sample are independent.
+
+
+Paul
+
+
+
+[1] Bootstrapping (statistics) (n.d.). In Wikipedia. Retrieved March 14, 2017, from https://en.wikipedia.org/wiki/Bootstrapping_(statistics)
+
+[2] Burns, P. (n.d.). The Statistical Bootstrap and Other Resampling Methods. Retrieved March 14, 2017, from http://www.burns-stat.com/documents/tutorials/the-statistical-bootstrap-and-other-resampling-methods-2/
